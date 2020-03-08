@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Build;
 using Microsoft.Build.Locator;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.MSBuild;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.FlowAnalysis;
-using Microsoft.CodeAnalysis.MSBuild;
 
 namespace CodeStructureExtractor
 {
@@ -18,20 +20,19 @@ namespace CodeStructureExtractor
         {
             var workspace = CreateMSBuildWorkspace();
 
-            Solution solution = OpenSolution(workspace, solutionLocation);
+            Solution solution = OpenSolution(workspace, solutionPath);
 
             // Set Parser options
             CSharpParseOptions options = CSharpParseOptions.Default
            .WithFeatures(new[] { new KeyValuePair<string, string>("flow-analysis", "") });
 
-            // Build solution and analyse projects
-            BuildSolution(solution, options, outputLocation);
+            var seenProjects = new ConcurrentDictionary<string, bool>();
 
             Microsoft.CodeAnalysis.ProjectDependencyGraph projectGraph = solution.GetProjectDependencyGraph();
             foreach (var projectId in projectGraph.GetTopologicallySortedProjects())
             {
 
-                if (!_seenProjects.TryAdd(solution.GetProject(projectId).FilePath, true))
+                if (!seenProjects.TryAdd(solution.GetProject(projectId).FilePath, true))
                 {
                     continue;
                 }
@@ -52,10 +53,11 @@ namespace CodeStructureExtractor
                 {
                     case CSharpCompilation cSharpCompilation:
 
-                        foreach (SyntaxTree syntaxTree in syntaxTrees)
+                        foreach (SyntaxTree syntaxTree in projectCompilation.SyntaxTrees)
                         {
 
                         }
+                        break;
                 }
             }
         }
@@ -77,7 +79,7 @@ namespace CodeStructureExtractor
             return workspace;
         }
 
-        public static Solution OpenSolution(MSBuildWorkspace workspace, string solutionLocation = "C:\\Users\\t-bewill\\Documents\\Project_1\\AIResidency_PredictiveProfiling\\syntax-tree-parser\\TestProject\\TestProject.sln")
+        public static Solution OpenSolution(MSBuildWorkspace workspace, string solutionLocation = "")
         {
             Microsoft.CodeAnalysis.Solution solution = workspace.OpenSolutionAsync(solutionLocation).Result;
             Console.WriteLine(String.Format("\nOpening solution: {0}\n", solutionLocation));

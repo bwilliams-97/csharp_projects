@@ -13,5 +13,6 @@ namespace CodeStructureExtractor
     // an object and write this to image format.
     class GraphWriter
     {
+
     }
 }

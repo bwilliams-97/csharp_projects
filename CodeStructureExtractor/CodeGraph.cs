@@ -3,43 +3,59 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis;
 
 namespace CodeStructureExtractor
 {
     class CodeGraph
     {
-        public List<(int parentNode, int childNode)> Edges { get; private set; }
+        private List<(SyntaxNode parentNode, SyntaxNode childNode)> _edges { get; set; }
 
-        public Dictionary<int, NodeInformation> Nodes { get; private set; }
+        public Dictionary<SyntaxNode, NodeInformation> Vocabulary { get; private set; }
+
+        public List<(int parentNode, int childNode)> EncodedEdges { get; private set; }
 
         private SemanticModel _semanticModel { get; set; }
 
         public CodeGraph(SemanticModel semanticModel)
         {
-            Nodes = new Dictionary<int, NodeInformation>();
-            Edges = new List<(int parentNode, int childNode)>();
+            Vocabulary = new Dictionary<SyntaxNode, NodeInformation>();
+            _edges = new List<(SyntaxNode parentNode, SyntaxNode childNode)>();
 
             _semanticModel = semanticModel;
         }
 
         public void AddNode(SyntaxNode node)
         {
-            string nodeName =;// GET NODE NAME FROM SEMANTIC MODEL
+            string nodeName = _semanticModel.GetDeclaredSymbol(node).Name.ToString();// GET NODE NAME FROM SEMANTIC MODEL
             string nodeType = node.Kind().ToString();
             string fileName = node.SyntaxTree.FilePath.ToString();
-            int lineNumber = 0;
+            int lineNumber = node.GetLocation().GetLineSpan().StartLinePosition.Line + 1;
             
-            Nodes.Add(
-                Nodes.Count,
-                new NodeInformation(nodeName, nodeType, fileName, lineNumber)
+            Vocabulary.Add(
+                node,
+                new NodeInformation(Vocabulary.Count, nodeName, nodeType, fileName, lineNumber)
                 );
         }
 
-        public void AddEdge ()
+        public void AddEdge(SyntaxNode parentNode, SyntaxNode childNode)
+        {
+            _edges.Add((parentNode, childNode));
+        }
+
+        public void ConvertEdgesToEncodedEdges()
+        {
+            foreach(var edge in _edges)
+            {
+                EncodedEdges.Add((Vocabulary[edge.parentNode].Encoding, Vocabulary[edge.childNode].Encoding));
+            }
+        }
     }
 
     class NodeInformation
     {
+        public int Encoding { get; private set; }
         public string NodeName { get; private set; }
 
         public string NodeType { get; private set; }
@@ -49,12 +65,14 @@ namespace CodeStructureExtractor
         public int LineNumber { get; private set; }
 
         public NodeInformation(
+            int nodeEncoding,
             string nodeName, 
             string nodeType,
             string fileName,
             int lineNumber
             )
         {
+            Encoding = nodeEncoding;
             NodeName = nodeName;
             NodeType = nodeType;
             FileName = fileName;
