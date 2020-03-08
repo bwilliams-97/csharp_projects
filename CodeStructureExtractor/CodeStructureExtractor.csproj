@@ -43,6 +43,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ASTVisitor.cs" />
+    <Compile Include="CallGraphVisitor.cs" />
+    <Compile Include="CodeGraph.cs" />
+    <Compile Include="GraphWriter.cs" />
+    <Compile Include="CSharpSolutionBuilder.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

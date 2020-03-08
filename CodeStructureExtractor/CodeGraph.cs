@@ -34,6 +34,8 @@ namespace CodeStructureExtractor
                 new NodeInformation(nodeName, nodeType, fileName, lineNumber)
                 );
         }
+
+        public void AddEdge ()
     }
 
     class NodeInformation

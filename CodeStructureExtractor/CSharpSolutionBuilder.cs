@@ -18,7 +18,7 @@ namespace CodeStructureExtractor
         {
             var workspace = CreateMSBuildWorkspace();
 
-            var solution = OpenSolution(workspace, solutionLocation);
+            Solution solution = OpenSolution(workspace, solutionLocation);
 
             // Set Parser options
             CSharpParseOptions options = CSharpParseOptions.Default
