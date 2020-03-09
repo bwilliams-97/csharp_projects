@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 
 namespace CodeStructureExtractor
 {
@@ -21,6 +23,14 @@ namespace CodeStructureExtractor
             string baseDir = args[0];
             string solutionPath = args[1];
             string outputDir = args[2];
+
+            void ExploreSolution(SyntaxTree syntaxTree, SemanticModel semanticModel)
+            {
+                var callGraph = CallGraphVisitor.ExtractCallGraph(syntaxTree, semanticModel);
+                var ast = ASTVisitor.ExtractAST(syntaxTree, semanticModel);
+            }
+
+            CSharpSolutionBuilder.BuildSolution(solutionPath, ExploreSolution);
         }
     }
 }
