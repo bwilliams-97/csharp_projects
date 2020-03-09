@@ -55,7 +55,9 @@ namespace CodeStructureExtractor
 
                         foreach (SyntaxTree syntaxTree in projectCompilation.SyntaxTrees)
                         {
-                            solutionExplorer(syntaxTree);
+                            var semanticModel = projectCompilation.GetSemanticModel(syntaxTree);
+
+                            solutionExplorer(syntaxTree, semanticModel);
                         }
                         break;
                 }
