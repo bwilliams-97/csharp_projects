@@ -17,7 +17,7 @@ namespace CodeStructureExtractor
                 args = new string[3];
                 args[0] = @"C:\Users\t-bewill\Documents\Project_1\AIResidency_PredictiveProfiling\syntax-tree-parser\TestProject";
                 args[1] = @"C:\Users\t-bewill\Documents\Project_1\AIResidency_PredictiveProfiling\syntax-tree-parser\TestProject\TestProject.sln";
-                args[3] = @"C:\Users\t-bewill\Documents\Personal experiments";
+                args[2] = @"C:\Users\t-bewill\Documents\Personal experiments";
             }
 
             string baseDir = args[0];
