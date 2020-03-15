@@ -15,11 +15,13 @@ namespace CodeStructureExtractor
         private CodeGraph _callGraph;
 
         private SyntaxTree _syntaxTree;
+        private SemanticModel _semanticModel;
 
         private CallGraphVisitor(SyntaxTree syntaxTree, SemanticModel semanticModel)
         {
             _syntaxTree = syntaxTree;
             _callGraph = new CodeGraph(semanticModel);
+            _semanticModel = semanticModel;
         }
 
         public static CodeGraph ExtractCallGraph(SyntaxTree syntaxTree, SemanticModel semanticModel)
@@ -58,7 +60,12 @@ namespace CodeStructureExtractor
             {
                 parentNode = parentNode.Parent;
             }
-            _callGraph.AddEdge(parentNode, node);
+            // TODO: map from invocaion to original method declaration.
+            var originalMethodSymbol = _semanticModel.GetDeclaredSymbol(node);
+            var syntaxReference = originalMethodSymbol.DeclaringSyntaxReferences.FirstOrDefault();
+            var originalInvocationDeclaration = syntaxReference.GetSyntax();
+
+            _callGraph.AddEdge(parentNode, originalInvocationDeclaration);
             base.VisitInvocationExpression(node);
         }
     }
