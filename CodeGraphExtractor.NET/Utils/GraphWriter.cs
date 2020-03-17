@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 using System.IO.Compression;
+using System.Text;
+using System.Drawing;
 using GraphVizWrapper;
 using GraphVizWrapper.Commands;
 using GraphVizWrapper.Queries;
@@ -19,7 +17,7 @@ namespace CodeStructureExtractor
         // These three instances can be injected via the IGetStartProcessQuery, 
         //                                               IGetProcessStartInfoQuery and 
         //                                               IRegisterLayoutPluginCommand interfaces
-        public static void GenerateDotGraph()
+        public static void GenerateDotGraph(CodeGraph codeGraph, string outputFileName)
         {
             var getStartProcessQuery = new GetStartProcessQuery();
             var getProcessStartInfoQuery = new GetProcessStartInfoQuery();
@@ -31,12 +29,48 @@ namespace CodeStructureExtractor
                                               getProcessStartInfoQuery,
                                               registerLayoutPluginCommand);
 
-            byte[] output = wrapper.GenerateGraph("digraph{a -> b; b -> c; c -> a;}", Enums.GraphReturnType.Png);
+            string graphDotString = GenerateDotString(codeGraph);
+            byte[] output = wrapper.GenerateGraph(graphDotString, Enums.GraphReturnType.Png);
+            WriteGraphToImageFile(output, outputFileName);
         }
 
-        public static void WriteGraphToFile(byte[] graphArray)
+        public static string GenerateDotString(CodeGraph codeGraph)
         {
+            StringBuilder dotString = new StringBuilder();
 
+            dotString.Append("digraph {");
+
+            foreach(var node in codeGraph.Vocabulary)
+            {
+                NodeInformation nodeInfo = node.Value;
+                int nodeLabel = nodeInfo.Encoding;
+                string nodeName = nodeInfo.NodeName;
+
+                dotString.Append($"{nodeLabel} [label={nodeName}];");
+            }
+
+            foreach(var edge in codeGraph.EncodedEdges)
+            {
+                dotString.Append($"{edge.parentNode} -> {edge.childNode};");
+            }
+            dotString.Append("}");
+
+            return dotString.ToString();
+        }
+
+        public static Image ConvertByteArrayToImage(byte[] byteArrayIn)
+        {
+            using (MemoryStream memoryStream = new MemoryStream(byteArrayIn))
+            {
+                return Image.FromStream(memoryStream);
+            }
+        }
+
+        public static void WriteGraphToImageFile(byte[] graphArray, string outputFileName)
+        {
+            var image = ConvertByteArrayToImage(graphArray);
+
+            image.Save(outputFileName, System.Drawing.Imaging.ImageFormat.Png);
         }
     }
 }

@@ -39,6 +39,13 @@ namespace CodeStructureExtractor
             {
                 nodeName = node.ToString();
             }
+
+            // Convert from .ctor to className
+            if(nodeName == ".ctor")
+            {
+                string nodeClassName = _semanticModel.GetDeclaredSymbol(node).ContainingType.Name.ToString();
+                nodeName = nodeClassName.Split('.').Last();
+            }
             string nodeType = node.Kind().ToString();
             string fileName = node.SyntaxTree.FilePath.ToString();
             int lineNumber = node.GetLocation().GetLineSpan().StartLinePosition.Line + 1;

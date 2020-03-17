@@ -28,10 +28,11 @@ namespace CodeStructureExtractor
             {
                 var callGraph = CallGraphVisitor.ExtractCallGraph(syntaxTree, semanticModel);
                 var ast = ASTVisitor.ExtractAST(syntaxTree, semanticModel);
+
+                GraphWriter.GenerateDotGraph(callGraph, @"..\..\file.png");
             }
 
             CSharpSolutionBuilder.BuildSolution(solutionPath, ExploreSolution);
-            GraphWriter.GenerateDotGraph();
         }
     }
 }

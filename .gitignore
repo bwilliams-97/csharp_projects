@@ -19,6 +19,11 @@ x64/
 [Tt]est[Rr]esult*/
 [Bb]uild[Ll]og.*
 
+
+# Graphviz files
+
+graphviz/
+
 *_i.c
 *_p.c
 *_i.h
