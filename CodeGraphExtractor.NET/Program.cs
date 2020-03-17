@@ -31,6 +31,7 @@ namespace CodeStructureExtractor
             }
 
             CSharpSolutionBuilder.BuildSolution(solutionPath, ExploreSolution);
+            GraphWriter.GenerateDotGraph();
         }
     }
 }

@@ -22,13 +22,23 @@ namespace CodeStructureExtractor
         {
             Vocabulary = new Dictionary<SyntaxNode, NodeInformation>();
             _edges = new List<(SyntaxNode parentNode, SyntaxNode childNode)>();
+            EncodedEdges = new List<(int parentNode, int childNode)>();
 
             _semanticModel = semanticModel;
         }
 
         public void AddNode(SyntaxNode node)
         {
-            string nodeName = _semanticModel.GetDeclaredSymbol(node).Name.ToString();
+            ISymbol nodeSymbol = _semanticModel.GetDeclaredSymbol(node);
+            string nodeName;
+            if(nodeSymbol != null)
+            {
+                nodeName = _semanticModel.GetDeclaredSymbol(node).Name.ToString();
+            }
+            else
+            {
+                nodeName = node.ToString();
+            }
             string nodeType = node.Kind().ToString();
             string fileName = node.SyntaxTree.FilePath.ToString();
             int lineNumber = node.GetLocation().GetLineSpan().StartLinePosition.Line + 1;
