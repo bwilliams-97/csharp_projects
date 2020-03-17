@@ -22,6 +22,4 @@ GraphWriter uses the Nuget Graphviz.NET package as a wrapper for graphviz. To us
 </appSettings>
 ```
 
-where graphvizLocation is the local directory containing the [graphviz binary files](http://www.graphviz.org/download/
-
-).
+where graphvizLocation is the local directory containing the [graphviz binary files](http://www.graphviz.org/download/).
