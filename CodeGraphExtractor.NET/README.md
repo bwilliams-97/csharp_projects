@@ -2,6 +2,10 @@
 
 This project reads in a C# solution and extracts graph representations of the code to be written to file.
 
+Two graph types are currently supported for extraction:
+1. Call graph.
+2. Abstract syntax tree (AST).
+
 ## Files
 - [Program](Program.cs) Contains Main() function for project.
 - [CSharpSolutionBuilder](CSharpSolutionBuilder.cs) Build selected solution and apply relevant extraction function.
@@ -18,4 +22,6 @@ GraphWriter uses the Nuget Graphviz.NET package as a wrapper for graphviz. To us
 </appSettings>
 ```
 
-where graphvizLocation is the local directory containing the [graphviz binary files](https://graphviz.gitlab.io/_pages/Download).
+where graphvizLocation is the local directory containing the [graphviz binary files](http://www.graphviz.org/download/
+
+).
