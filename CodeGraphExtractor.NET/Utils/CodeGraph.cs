@@ -40,6 +40,8 @@ namespace CodeStructureExtractor
                 nodeName = node.ToString();
             }
 
+            nodeName = nodeName.Replace("\"", "");
+
             // Convert from .ctor to className
             if(nodeName == ".ctor")
             {

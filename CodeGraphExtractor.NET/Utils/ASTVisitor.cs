@@ -16,6 +16,7 @@ namespace CodeStructureExtractor
 
         public static CodeGraph ExtractAST(SyntaxTree syntaxTree, SemanticModel semanticModel)
         {
+            Console.WriteLine($"Extracting AST from {syntaxTree.FilePath}");
             ASTVisitor astVisitor = new ASTVisitor(syntaxTree, semanticModel);
 
             astVisitor.Visit(syntaxTree.GetRoot());

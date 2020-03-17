@@ -26,6 +26,7 @@ namespace CodeStructureExtractor
 
         public static CodeGraph ExtractCallGraph(SyntaxTree syntaxTree, SemanticModel semanticModel)
         {
+            Console.WriteLine($"Extracting call graph from {syntaxTree.FilePath}");
             var graphVisitor = new CallGraphVisitor(syntaxTree, semanticModel);
 
             graphVisitor.Visit(syntaxTree.GetRoot());

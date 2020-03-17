@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,7 +18,7 @@ namespace CodeStructureExtractor
                 args = new string[3];
                 args[0] = @"C:\Users\t-bewill\Documents\Project_1\AIResidency_PredictiveProfiling\syntax-tree-parser\TestProject";
                 args[1] = @"C:\Users\t-bewill\Documents\Project_1\AIResidency_PredictiveProfiling\syntax-tree-parser\TestProject\TestProject.sln";
-                args[2] = @"C:\Users\t-bewill\Documents\Personal experiments";
+                args[2] = @"C:\Users\t-bewill\Documents\Personal experiments\graphs";
             }
 
             string baseDir = args[0];
@@ -26,10 +27,21 @@ namespace CodeStructureExtractor
 
             void ExploreSolution(SyntaxTree syntaxTree, SemanticModel semanticModel)
             {
-                var callGraph = CallGraphVisitor.ExtractCallGraph(syntaxTree, semanticModel);
-                var ast = ASTVisitor.ExtractAST(syntaxTree, semanticModel);
+                string fileName = syntaxTree.FilePath.Split('\\').Last();
 
-                GraphWriter.GenerateDotGraph(callGraph, @"..\..\file.png");
+                string saveDir = Path.Combine(outputDir, fileName);
+                if (!Directory.Exists(saveDir))
+                {
+                    Directory.CreateDirectory(saveDir);
+                }
+
+                var callGraph = CallGraphVisitor.ExtractCallGraph(syntaxTree, semanticModel);
+                string callGraphOutputPath = Path.Combine(saveDir, "callGraph.png");
+                GraphWriter.GenerateDotGraph(callGraph, callGraphOutputPath);
+
+                var ast = ASTVisitor.ExtractAST(syntaxTree, semanticModel);
+                string astOutputPath = Path.Combine(saveDir, "ast.png");
+                GraphWriter.GenerateDotGraph(ast, astOutputPath);
             }
 
             CSharpSolutionBuilder.BuildSolution(solutionPath, ExploreSolution);
