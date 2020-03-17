@@ -12,9 +12,10 @@ This project reads in a C# solution and extracts graph representations of the co
 
 ## Graphviz.NET
 GraphWriter uses the Nuget Graphviz.NET package as a wrapper for graphviz. To use this package the following lines must be added to [App.config](App.config):
-
+```
 <appSettings>
     <add key="graphVizLocation" value=[graphvizLocation]/>
 </appSettings>
+```
 
 where graphvizLocation is the local directory containing the [graphviz binary files](https://graphviz.gitlab.io/_pages/Download).
