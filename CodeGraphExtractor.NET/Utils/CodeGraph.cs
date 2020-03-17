@@ -40,7 +40,8 @@ namespace CodeStructureExtractor
                 nodeName = node.ToString();
             }
 
-            nodeName = nodeName.Replace("\"", "");
+            // TODO: find a better way of removing quotation marks.
+            nodeName = nodeName.Replace("\"", "%");
 
             // Convert from .ctor to className
             if(nodeName == ".ctor")
