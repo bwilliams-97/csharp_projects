@@ -61,7 +61,7 @@ namespace CodeStructureExtractor
             {
                 parentNode = parentNode.Parent;
             }
-            // TODO: map from invocation to original method declaration.
+            // TODO: deal with cases where we can't match back to original declaration (e.g. system calls).
             var originalMethodSymbol = _semanticModel.GetSymbolInfo(node).Symbol;
             var syntaxReference = originalMethodSymbol.DeclaringSyntaxReferences.FirstOrDefault();
             if(syntaxReference != null)

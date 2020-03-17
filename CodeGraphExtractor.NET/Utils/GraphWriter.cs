@@ -10,14 +10,8 @@ using Newtonsoft.Json;
 
 namespace CodeStructureExtractor
 {
-    // Should take a graph of form node [node index, node label, node type] and edges [(parent, child)]
-    // and write to (a) json.gz, (b) image output. Should also be able to read a json.gz graph into 
-    // an object and write this to image format.
     class GraphWriter
     {
-        // These three instances can be injected via the IGetStartProcessQuery, 
-        //                                               IGetProcessStartInfoQuery and 
-        //                                               IRegisterLayoutPluginCommand interfaces
         public static void GenerateDotGraph(CodeGraph codeGraph, string outputFileName)
         {
             Console.WriteLine($"Writing code graph to {outputFileName}");
