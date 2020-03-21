@@ -30,7 +30,7 @@ namespace CodeStructureExtractor
         {
             _syntaxTree = syntaxTree;
 
-            _syntaxGraph = new CodeGraph(semanticModel);
+            _syntaxGraph = new CodeGraph(semanticModel, true);
         }
 
         public override void Visit(SyntaxNode node)

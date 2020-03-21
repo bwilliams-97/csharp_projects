@@ -16,15 +16,25 @@ namespace CodeStructureExtractor
 
         public HashSet<(int parentNode, int childNode)> EncodedEdges { get; private set; }
 
+        public Dictionary<SyntaxKind, string> ColorMap { get; private set; }
+
+        private bool _colorNodes { get; set; }
+
         private SemanticModel _semanticModel { get; set; }
 
-        public CodeGraph(SemanticModel semanticModel)
+        private Random _random { get; set; }
+
+        public CodeGraph(SemanticModel semanticModel, bool colorNodes)
         {
             Vocabulary = new Dictionary<SyntaxNode, NodeInformation>();
             _edges = new List<(SyntaxNode parentNode, SyntaxNode childNode)>();
             EncodedEdges = new HashSet<(int parentNode, int childNode)>();
 
             _semanticModel = semanticModel;
+
+            _random = new Random();
+
+            _colorNodes = colorNodes;
         }
 
         public void AddNode(SyntaxNode node)
@@ -49,7 +59,7 @@ namespace CodeStructureExtractor
                 string nodeClassName = _semanticModel.GetDeclaredSymbol(node).ContainingType.Name.ToString();
                 nodeName = nodeClassName.Split('.').Last();
             }
-            string nodeType = node.Kind().ToString();
+            SyntaxKind nodeType = node.Kind();
             string fileName = node.SyntaxTree.FilePath.ToString();
             int lineNumber = node.GetLocation().GetLineSpan().StartLinePosition.Line + 1;
             
@@ -57,6 +67,39 @@ namespace CodeStructureExtractor
                 node,
                 new NodeInformation(Vocabulary.Count, nodeName, nodeType, fileName, lineNumber)
                 );
+
+            if (_colorNodes)
+            {
+                AddNodeTypeToColorMap(nodeType);
+            }
+            else
+            {
+                AddNodeTypeToColorMap(nodeType, "0.0 0.0 1.0");
+            }  
+        }
+
+        private void AddNodeTypeToColorMap(SyntaxKind nodeType)
+        {
+            if (!ColorMap.ContainsKey(nodeType))
+            {
+                string hue = string.Format("{0:0.000}", _random.NextDouble());
+                string saturation = string.Format("{0:0.000}", (0.6*_random.NextDouble()));
+                string value = string.Format("{0:0.000}", (1 - 0.5 * _random.NextDouble()));
+                string hsvColor = String.Join(" ", new string[]{
+                    hue,
+                    saturation,
+                    value
+                    });
+                ColorMap.Add(nodeType, hsvColor);
+            }
+        }
+
+        private void AddNodeTypeToColorMap(SyntaxKind nodeType, string nodeColor)
+        {
+            if (!ColorMap.ContainsKey(nodeType))
+            {
+                ColorMap.Add(nodeType, nodeColor);
+            }
         }
 
         public void AddEdge(SyntaxNode parentNode, SyntaxNode childNode)
@@ -78,7 +121,7 @@ namespace CodeStructureExtractor
         public int Encoding { get; private set; }
         public string NodeName { get; private set; }
 
-        public string NodeType { get; private set; }
+        public SyntaxKind NodeType { get; private set; }
 
         public string FileName { get; private set; }
 
@@ -87,7 +130,7 @@ namespace CodeStructureExtractor
         public NodeInformation(
             int nodeEncoding,
             string nodeName, 
-            string nodeType,
+            SyntaxKind nodeType,
             string fileName,
             int lineNumber
             )

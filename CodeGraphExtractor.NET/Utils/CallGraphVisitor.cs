@@ -20,7 +20,7 @@ namespace CodeStructureExtractor
         private CallGraphVisitor(SyntaxTree syntaxTree, SemanticModel semanticModel)
         {
             _syntaxTree = syntaxTree;
-            _callGraph = new CodeGraph(semanticModel);
+            _callGraph = new CodeGraph(semanticModel, false);
             _semanticModel = semanticModel;
         }
 

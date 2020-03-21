@@ -50,7 +50,8 @@ namespace CodeStructureExtractor
                 NodeInformation nodeInfo = node.Value;
                 int nodeLabel = nodeInfo.Encoding;
                 string nodeName = nodeInfo.NodeName;
-                string nodeEntry = $"{nodeLabel} [label=\"{nodeName}\"];";
+                string nodeColor = codeGraph.ColorMap[nodeInfo.NodeType];
+                string nodeEntry = $"{nodeLabel} [label=\"{nodeName}\" style=filled fillcolor=\"{nodeColor}\"];";
                 dotString.Append(nodeEntry);
             }
 
