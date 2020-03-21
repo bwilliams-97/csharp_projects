@@ -18,7 +18,7 @@ namespace CodeStructureExtractor
 
         public Dictionary<SyntaxKind, string> ColorMap { get; private set; }
 
-        private bool _colorNodes { get; set; }
+        public bool ColorNodes { get; private set; }
 
         private SemanticModel _semanticModel { get; set; }
 
@@ -34,7 +34,9 @@ namespace CodeStructureExtractor
 
             _random = new Random();
 
-            _colorNodes = colorNodes;
+            ColorNodes = colorNodes;
+
+            ColorMap = new Dictionary<SyntaxKind, string>();
         }
 
         public void AddNode(SyntaxNode node)
@@ -68,7 +70,7 @@ namespace CodeStructureExtractor
                 new NodeInformation(Vocabulary.Count, nodeName, nodeType, fileName, lineNumber)
                 );
 
-            if (_colorNodes)
+            if (ColorNodes)
             {
                 AddNodeTypeToColorMap(nodeType);
             }

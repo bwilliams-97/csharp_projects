@@ -7,6 +7,10 @@ using GraphVizWrapper;
 using GraphVizWrapper.Commands;
 using GraphVizWrapper.Queries;
 using Newtonsoft.Json;
+using System.Linq;
+using System.Configuration;
+using Microsoft.CodeAnalysis.CSharp;
+using System.Collections.Generic;
 
 namespace CodeStructureExtractor
 {
@@ -60,10 +64,28 @@ namespace CodeStructureExtractor
                 dotString.Append($"{edge.parentNode} -> {edge.childNode};");
             }
 
+            dotString = AddKeyToDotString(dotString, codeGraph);
+
             // End line of dot string
             dotString.Append("}");
 
             return dotString.ToString();
+        }
+
+        private static StringBuilder AddKeyToDotString(StringBuilder dotString, CodeGraph codeGraph)
+        {
+            if (codeGraph.ColorNodes)
+            {
+                int keyIndex = -1;
+                foreach(KeyValuePair<SyntaxKind, string> colorMapping in codeGraph.ColorMap)
+                {
+                    string syntaxKey = colorMapping.Key.ToString();
+                    string hsvColor = colorMapping.Value;
+                    dotString.Append($"{keyIndex} [label=\"{syntaxKey}\" style=filled shape=box fillcolor=\"{hsvColor}\"];");
+                    keyIndex--;
+                }
+            }
+            return dotString;
         }
 
         private static Image ConvertByteArrayToImage(byte[] byteArrayIn)
