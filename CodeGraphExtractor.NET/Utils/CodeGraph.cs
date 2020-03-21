@@ -14,7 +14,7 @@ namespace CodeStructureExtractor
 
         public Dictionary<SyntaxNode, NodeInformation> Vocabulary { get; private set; }
 
-        public List<(int parentNode, int childNode)> EncodedEdges { get; private set; }
+        public HashSet<(int parentNode, int childNode)> EncodedEdges { get; private set; }
 
         private SemanticModel _semanticModel { get; set; }
 
@@ -22,7 +22,7 @@ namespace CodeStructureExtractor
         {
             Vocabulary = new Dictionary<SyntaxNode, NodeInformation>();
             _edges = new List<(SyntaxNode parentNode, SyntaxNode childNode)>();
-            EncodedEdges = new List<(int parentNode, int childNode)>();
+            EncodedEdges = new HashSet<(int parentNode, int childNode)>();
 
             _semanticModel = semanticModel;
         }

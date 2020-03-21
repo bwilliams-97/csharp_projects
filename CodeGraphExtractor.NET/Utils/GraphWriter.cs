@@ -15,6 +15,16 @@ namespace CodeStructureExtractor
         public static void GenerateDotGraph(CodeGraph codeGraph, string outputFileName)
         {
             Console.WriteLine($"Writing code graph to {outputFileName}");
+
+            GraphGeneration wrapper = GetGraphvizWrapper();
+
+            string graphDotString = ConvertGraphToDotString(codeGraph);
+            byte[] output = wrapper.GenerateGraph(graphDotString, Enums.GraphReturnType.Png);
+            WriteGraphToImageFile(output, outputFileName);
+        }
+
+        private static GraphGeneration GetGraphvizWrapper()
+        {
             var getStartProcessQuery = new GetStartProcessQuery();
             var getProcessStartInfoQuery = new GetProcessStartInfoQuery();
             var registerLayoutPluginCommand = new RegisterLayoutPluginCommand(getProcessStartInfoQuery, getStartProcessQuery);
@@ -25,9 +35,7 @@ namespace CodeStructureExtractor
                                               getProcessStartInfoQuery,
                                               registerLayoutPluginCommand);
 
-            string graphDotString = ConvertGraphToDotString(codeGraph);
-            byte[] output = wrapper.GenerateGraph(graphDotString, Enums.GraphReturnType.Png);
-            WriteGraphToImageFile(output, outputFileName);
+            return wrapper;
         }
 
         public static string ConvertGraphToDotString(CodeGraph codeGraph)
@@ -57,7 +65,7 @@ namespace CodeStructureExtractor
             return dotString.ToString();
         }
 
-        public static Image ConvertByteArrayToImage(byte[] byteArrayIn)
+        private static Image ConvertByteArrayToImage(byte[] byteArrayIn)
         {
             using (MemoryStream memoryStream = new MemoryStream(byteArrayIn))
             {
