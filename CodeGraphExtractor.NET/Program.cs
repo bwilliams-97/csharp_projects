@@ -15,10 +15,11 @@ namespace CodeStructureExtractor
         {
             if(args.Length != 3)
             {
+                // Alternative to set default arguments here.
                 args = new string[3];
-                args[0] = @"C:\Users\t-bewill\Documents\Project_1\AIResidency_PredictiveProfiling\syntax-tree-parser\TestProject";
-                args[1] = @"C:\Users\t-bewill\Documents\Project_1\AIResidency_PredictiveProfiling\syntax-tree-parser\TestProject\TestProject.sln";
-                args[2] = @"C:\Users\t-bewill\Documents\Personal experiments\graphs";
+                args[0] = @"";
+                args[1] = @"";
+                args[2] = @"";
             }
 
             string baseDir = args[0];
@@ -35,10 +36,12 @@ namespace CodeStructureExtractor
                     Directory.CreateDirectory(saveDir);
                 }
 
+                // Extract call graph and write to file.
                 var callGraph = CallGraphVisitor.ExtractCallGraph(syntaxTree, semanticModel);
                 string callGraphOutputPath = Path.Combine(saveDir, "callGraph.png");
                 GraphWriter.GenerateDotGraph(callGraph, callGraphOutputPath);
 
+                // Extract AST and write to file.
                 var ast = ASTVisitor.ExtractAST(syntaxTree, semanticModel);
                 string astOutputPath = Path.Combine(saveDir, "ast.png");
                 GraphWriter.GenerateDotGraph(ast, astOutputPath);

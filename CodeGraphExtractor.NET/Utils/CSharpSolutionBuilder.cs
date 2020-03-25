@@ -16,6 +16,11 @@ namespace CodeStructureExtractor
 {
     class CSharpSolutionBuilder
     {
+        /// <summary>
+        /// Build solution and call specified action on syntax tree and semantic model of a particular file.
+        /// </summary>
+        /// <param name="solutionPath"></param>
+        /// <param name="solutionExplorer"></param>
         public static void BuildSolution(string solutionPath, Action<SyntaxTree, SemanticModel> solutionExplorer)
         {
             var workspace = CreateMSBuildWorkspace();

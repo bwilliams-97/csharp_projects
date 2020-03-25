@@ -16,6 +16,11 @@ namespace CodeStructureExtractor
 {
     class GraphWriter
     {
+        /// <summary>
+        /// Generate dot string that represents graph and write to file.
+        /// </summary>
+        /// <param name="codeGraph"></param>
+        /// <param name="outputFileName"></param>
         public static void GenerateDotGraph(CodeGraph codeGraph, string outputFileName)
         {
             Console.WriteLine($"Writing code graph to {outputFileName}");
@@ -27,6 +32,10 @@ namespace CodeStructureExtractor
             WriteGraphToImageFile(output, outputFileName);
         }
 
+        /// <summary>
+        /// Set up graphviz wrapper to generate graphviz graph with.
+        /// </summary>
+        /// <returns></returns>
         private static GraphGeneration GetGraphvizWrapper()
         {
             var getStartProcessQuery = new GetStartProcessQuery();
@@ -49,21 +58,26 @@ namespace CodeStructureExtractor
             // Start line of dot string
             dotString.Append("digraph {");
 
+            // Add nodes to dot string
             foreach(var node in codeGraph.Vocabulary)
             {
                 NodeInformation nodeInfo = node.Value;
                 int nodeLabel = nodeInfo.Encoding;
                 string nodeName = nodeInfo.NodeName;
                 string nodeColor = codeGraph.ColorMap[nodeInfo.NodeType];
+
                 string nodeEntry = $"{nodeLabel} [label=\"{nodeName}\" style=filled fillcolor=\"{nodeColor}\"];";
                 dotString.Append(nodeEntry);
             }
 
+            // Add edges to dot string
             foreach(var edge in codeGraph.EncodedEdges)
             {
                 dotString.Append($"{edge.parentNode} -> {edge.childNode};");
             }
 
+            // TO DO: find better way of showing key on output image.
+            // Add key (for colormap) to dot string.
             dotString = AddKeyToDotString(dotString, codeGraph);
 
             // End line of dot string
@@ -72,6 +86,13 @@ namespace CodeStructureExtractor
             return dotString.ToString();
         }
 
+        /// <summary>
+        /// Add unconnected nodes to dot string. Each node has label of syntax node type
+        /// and color of associated color in color map.
+        /// </summary>
+        /// <param name="dotString"></param>
+        /// <param name="codeGraph"></param>
+        /// <returns></returns>
         private static StringBuilder AddKeyToDotString(StringBuilder dotString, CodeGraph codeGraph)
         {
             if (codeGraph.ColorNodes)

@@ -14,16 +14,20 @@ namespace CodeStructureExtractor
     {
         private CodeGraph _callGraph;
 
-        private SyntaxTree _syntaxTree;
         private SemanticModel _semanticModel;
 
         private CallGraphVisitor(SyntaxTree syntaxTree, SemanticModel semanticModel)
         {
-            _syntaxTree = syntaxTree;
             _callGraph = new CodeGraph(semanticModel, false);
             _semanticModel = semanticModel;
         }
 
+        /// <summary>
+        /// Visit all method declaration nodes and invocation nodes. Add nodes to call graph (CodeGraph) object.
+        /// </summary>
+        /// <param name="syntaxTree"></param>
+        /// <param name="semanticModel"></param>
+        /// <returns></returns>
         public static CodeGraph ExtractCallGraph(SyntaxTree syntaxTree, SemanticModel semanticModel)
         {
             Console.WriteLine($"Extracting call graph from {syntaxTree.FilePath}");
@@ -57,6 +61,8 @@ namespace CodeStructureExtractor
         public override void VisitInvocationExpression(InvocationExpressionSyntax node)
         {
             SyntaxNode parentNode = node.Parent;
+            // TODO: deal with other cases (local functions, accessors, anonymous functions).
+            // Move up the syntax tree until method declaration (parent) is found.
             while(!(parentNode is BaseMethodDeclarationSyntax))
             {
                 parentNode = parentNode.Parent;

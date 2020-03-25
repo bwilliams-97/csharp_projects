@@ -14,6 +14,12 @@ namespace CodeStructureExtractor
 
         private SyntaxTree _syntaxTree;
 
+        /// <summary>
+        /// Visit all nodes in syntax tree of a file. Add nodes to syntax graph (CodeGraph) object.
+        /// </summary>
+        /// <param name="syntaxTree"></param>
+        /// <param name="semanticModel"></param>
+        /// <returns></returns>
         public static CodeGraph ExtractAST(SyntaxTree syntaxTree, SemanticModel semanticModel)
         {
             Console.WriteLine($"Extracting AST from {syntaxTree.FilePath}");
